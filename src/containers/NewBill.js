@@ -17,28 +17,49 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const inputImage = this.document.querySelector(`input[data-testid="file"]`)
+    const file = inputImage.files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    const formData = new FormData()
-    const email = JSON.parse(localStorage.getItem("user")).email
-    formData.append('file', file)
-    formData.append('email', email)
+    
 
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true
-        }
-      })
-      .then(({fileUrl, key}) => {
-        console.log(fileUrl)
-        this.billId = key
-        this.fileUrl = fileUrl
-        this.fileName = fileName
-      }).catch(error => console.error(error))
+    if (/\.(jpg|jpeg|png|gif)$/g.test(fileName) === false) {
+      // errorMessage.style.display = "block"
+      const errorMessage = this.document.querySelector(`p[data-testid="error-message"]`)
+      if (!errorMessage) {
+        const errorMessage = this.document.createElement("p")
+        errorMessage.setAttribute("data-testid", "error-message")
+        errorMessage.innerText = "Le fichier doit être une image au format jpg, jpeg ou png"
+        inputImage.insertAdjacentElement("afterend", errorMessage)
+        errorMessage.style.color = "red"
+      }
+      
+      inputImage.value = ""
+    } else {
+      const errorMessage = this.document.querySelector(`p[data-testid="error-message"]`)
+      if (errorMessage) {
+        errorMessage.remove()
+      }
+      const formData = new FormData()
+      const email = JSON.parse(localStorage.getItem("user")).email
+      formData.append('file', file)
+      formData.append('email', email)
+
+      this.store
+        .bills()
+        .create({
+          data: formData,
+          headers: {
+            noContentType: true
+          }
+        })
+        .then(({fileUrl, key}) => {
+          console.log(fileUrl)
+          this.billId = key
+          this.fileUrl = fileUrl
+          this.fileName = fileName
+        }).catch(error => console.error(error))
+    }
   }
   handleSubmit = e => {
     e.preventDefault()
