@@ -3,6 +3,7 @@
  */
 
 import {screen, waitFor} from "@testing-library/dom"
+import '@testing-library/jest-dom'
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH} from "../constants/routes.js";
@@ -25,8 +26,7 @@ describe("Given I am connected as an employee", () => {
       window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
-      //to-do write expect expression
-
+      expect(windowIcon).toBeVisible()
     })
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })

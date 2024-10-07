@@ -85,25 +85,76 @@ export default class {
     if (typeof $('#modaleFileAdmin1').modal === 'function') $('#modaleFileAdmin1').modal('show')
   }
 
+/*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Function called when the edit button of a ticket is clicked.
+   * It displays the form or the big billed icon depending on the counter.
+   * It also sets the click event on the icon eye, accept and refuse button.
+   * 
+   * @param {Event} e - The event object.
+   * @param {Object} bill - The bill object.
+   * @param {Array} bills - The array of bills.
+   */
+/******  cba3f3db-f1df-4133-ab8b-319b73362c87  *******/
   handleEditTicket(e, bill, bills) {
-    if (this.counter === undefined || this.id !== bill.id) this.counter = 0
+    if (this.id !== bill.id) this.editCounter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
-    if (this.counter % 2 === 0) {
-      bills.forEach(b => {
-        $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
-      })
+
+    const billContainer = $(`#open-bill${bill.id}`).parent()[0]
+    const billID = billContainer.id
+    const billIDSplitted = billID.split('-')
+    let billStatus = billIDSplitted[billIDSplitted.length - 1]
+    console.log('billStatus = ', billStatus)
+
+    let index;
+    switch (billStatus) {
+      case 'container1':
+        index = 1
+        break
+      case 'container2':
+        index = 2
+        break
+      case 'container3':
+        index = 3
+        break
+    }
+
+    if (this.editCounter % 2 === 0) {
+      e.stopPropagation()
+      console.log(`this.counter = ${this.counter}, this.editCounter = ${this.editCounter} : Bill opened`)
+      bills.forEach(b => $(`#open-bill${b.id}`).css({ background: '#0D5AE5' }))
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
       $('.dashboard-right-container div').html(DashboardFormUI(bill))
       $('.vertical-navbar').css({ height: '150vh' })
-      this.counter ++
+      
+      if (this.index !== index) {
+        this.index = index
+        (this.editCounter % 2 === 0) ? this.editCounter ++ : this.editCounter += 2
+        this.counter = 0
+      } else {
+        (this.editCounter % 2 === 0) ? this.editCounter ++ : this.editCounter += 2
+        // this.counter = 0
+        bills.forEach(b => $(`#open-bill${b.id}`).css({ background: '#0D5AE5' }))
+        $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
+        $('.dashboard-right-container div').html(DashboardFormUI(bill))
+        $('.vertical-navbar').css({ height: '150vh' })
+      }
+      
+      // this.counter = 0
+      console.log('bill status = ', this.index)
+      // this.editCounter ++
     } else {
+      e.stopPropagation()
+      console.log(`editCounter === ${this.editCounter} : Bill close`)
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
       $('.dashboard-right-container div').html(`
         <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
       `)
       $('.vertical-navbar').css({ height: '120vh' })
-      this.counter ++
+
+      this.index = index
+      this.editCounter ++
     }
     $('#icon-eye-d').click(this.handleClickIconEye)
     $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
@@ -131,26 +182,58 @@ export default class {
   }
 
   handleShowTickets(e, bills, index) {
+    // this.counter ++;
     if (this.counter === undefined || this.index !== index) this.counter = 0
+    if (this.counter % 2 !== 0 && this.index !== index) {
+      this.counter = 1
+      this.index = index
+    }
     if (this.index === undefined || this.index !== index) this.index = index
-    if (this.counter % 2 === 0) {
+    if (this.counter % 2 === 0 && this.index === index) {
+      console.log('counter = ', this.counter, `counter % 2 = `, this.counter % 2, 'index ouvert')
+      
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
       $(`#status-bills-container${this.index}`)
         .html(cards(filteredBills(bills, getStatus(this.index))))
+      
+      bills.forEach(bill => {
+        $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      })
+
+      
+
       this.counter ++
-    } else {
+      this.index = index
+    } else if (this.counter % 2 === 0 && this.index !== index) {
+      this.counter ++
+      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
+      $(`#status-bills-container${this.index}`)
+        .html("")
+      this.index = index
+    } else if (this.counter % 2 !== 0) {
+      console.log(`counter === ${this.counter} : Bill close`)
+      console.log('counter = ', this.counter, `counter % 2 = `, this.counter % 2, 'index fermé')
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
       $(`#status-bills-container${this.index}`)
         .html("")
       this.counter ++
+      this.index = index
+    } else if (this.counter % 2 === 0 && this.index !== index) {
+      this.counter ++
+      console.log(`counter === ${this.counter} : Bill close`)
+      console.log('counter = ', this.counter, `counter % 2 = `, this.counter % 2, 'index fermé')
+      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
+      $(`#status-bills-container${this.index}`)
+        .html("")
+      this.counter ++
+      this.index = index
     }
 
-    bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
-    })
+    // bills.forEach(bill => {
+    //   $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills, this.index))
+    // })
 
     return bills
-
   }
 
   getBillsAllUsers = () => {
