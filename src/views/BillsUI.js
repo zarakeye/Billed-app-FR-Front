@@ -23,25 +23,24 @@ const rows = (data) => {
   return (data && data.length) ? data.sort((a, b) => new Date(a.date) < new Date(b.date) ? 1 : -1).map(bill => row(bill)).join("") : ""
 }
 
-export default ({ data: bills, loading, error }) => {
-  
-  const modal = () => (`
-    <div class="modal fade" id="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Justificatif</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-          </div>
+export const modal = () => (`
+  <div class="modal fade" id="modaleFile" data-testid="modaleProof" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Justificatif</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
         </div>
       </div>
     </div>
-  `)
+  </div>
+`)
 
+export default ({ data: bills, loading, error }) => {
   if (loading) {
     return LoadingPage()
   } else if (error) {
