@@ -23,7 +23,7 @@ export default class NewBill {
     const fileName = filePath[filePath.length-1]
     
 
-    if (/\.(jpg|jpeg|png|gif)$/g.test(fileName) === false) {
+    if (/\.(jpg|jpeg|png)$/g.test(fileName) === false) {
       // errorMessage.style.display = "block"
       const errorMessage = this.document.querySelector(`p[data-testid="error-message"]`)
       if (!errorMessage) {

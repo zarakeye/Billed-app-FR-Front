@@ -85,7 +85,6 @@ export default class {
     if (typeof $('#modaleFileAdmin1').modal === 'function') $('#modaleFileAdmin1').modal('show')
   }
 
-/*************  ✨ Codeium Command ⭐  *************/
   /**
    * Function called when the edit button of a ticket is clicked.
    * It displays the form or the big billed icon depending on the counter.
@@ -95,7 +94,6 @@ export default class {
    * @param {Object} bill - The bill object.
    * @param {Array} bills - The array of bills.
    */
-/******  cba3f3db-f1df-4133-ab8b-319b73362c87  *******/
   handleEditTicket(e, bill, bills) {
     if (this.id !== bill.id) this.editCounter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
@@ -121,7 +119,7 @@ export default class {
 
     if (this.editCounter % 2 === 0) {
       e.stopPropagation()
-      console.log(`this.counter = ${this.counter}, this.editCounter = ${this.editCounter} : Bill opened`)
+      console.log(`function handleEditTicket : this.counter = ${this.counter}, this.editCounter = ${this.editCounter} : Bill opened`)
       bills.forEach(b => $(`#open-bill${b.id}`).css({ background: '#0D5AE5' }))
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
       $('.dashboard-right-container div').html(DashboardFormUI(bill))
@@ -133,7 +131,7 @@ export default class {
         this.counter = 0
       } else {
         (this.editCounter % 2 === 0) ? this.editCounter ++ : this.editCounter += 2
-        // this.counter = 0
+        this.counter = 0
         bills.forEach(b => $(`#open-bill${b.id}`).css({ background: '#0D5AE5' }))
         $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
         $('.dashboard-right-container div').html(DashboardFormUI(bill))
@@ -141,8 +139,10 @@ export default class {
       }
       
       // this.counter = 0
-      console.log('bill status = ', this.index)
-      // this.editCounter ++
+      this.editCounter ++
+      this.index = index
+      console.log(`editCounter = ${this.editCounter}`)
+      console.log(`this.index = ${this.index}`)
     } else {
       e.stopPropagation()
       console.log(`editCounter === ${this.editCounter} : Bill close`)
@@ -182,7 +182,6 @@ export default class {
   }
 
   handleShowTickets(e, bills, index) {
-    // this.counter ++;
     if (this.counter === undefined || this.index !== index) this.counter = 0
     if (this.counter % 2 !== 0 && this.index !== index) {
       this.counter = 1
@@ -190,7 +189,7 @@ export default class {
     }
     if (this.index === undefined || this.index !== index) this.index = index
     if (this.counter % 2 === 0 && this.index === index) {
-      console.log('counter = ', this.counter, `counter % 2 = `, this.counter % 2, 'index ouvert')
+      console.log('function handleShowTickets : this.counter = ', this.counter, 'this.index = ', this.index, 'this.counter = ', this.counter, `counter % 2 = `, this.counter % 2, 'index ouvert')
       
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
       $(`#status-bills-container${this.index}`)
@@ -200,12 +199,10 @@ export default class {
         $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
       })
 
-      
-
       this.counter ++
       this.index = index
+      this.editCounter ++
     } else if (this.counter % 2 === 0 && this.index !== index) {
-      this.counter ++
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
       $(`#status-bills-container${this.index}`)
         .html("")
@@ -218,16 +215,16 @@ export default class {
         .html("")
       this.counter ++
       this.index = index
-    } else if (this.counter % 2 === 0 && this.index !== index) {
-      this.counter ++
-      console.log(`counter === ${this.counter} : Bill close`)
-      console.log('counter = ', this.counter, `counter % 2 = `, this.counter % 2, 'index fermé')
-      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
-      $(`#status-bills-container${this.index}`)
-        .html("")
-      this.counter ++
-      this.index = index
-    }
+    }// else if (this.counter % 2 === 0 && this.index !== index) {
+    //   this.editCounter ++
+    //   console.log(`function handleShowTickets : counter === ${this.counter} : Bill close`)
+    //   console.log('function handleShowTickets : counter = ', this.counter, `counter % 2 = `, this.counter % 2, 'index fermé')
+    //   $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
+    //   $(`#status-bills-container${this.index}`)
+    //     .html("")
+    //   this.counter ++
+    //   this.index = index
+    // }
 
     // bills.forEach(bill => {
     //   $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills, this.index))

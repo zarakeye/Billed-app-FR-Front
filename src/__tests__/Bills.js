@@ -12,8 +12,7 @@ import { ROUTES, ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store"
 import router from "../app/Router.js";
-import $, {modal} from "jquery"
-import jquery from "jquery"
+// import 'bootstrap/dist/js/bootstrap.js';
 
 
 jest.mock('../app/Store', () => mockStore)
@@ -65,14 +64,17 @@ describe("Given I am connected as an employee", () => {
       const store = null
       const billsPage = new Bills({ document, onNavigate, store , localStorage: window.localStorage})
       
-      const handleClickIconEye_test = jest.fn(() => billsPage.handleClickIconEye())
+      
       await waitFor(() => screen.getAllByTestId('icon-eye'))
       const eyes = screen.getAllByTestId('icon-eye')
 
       eyes.forEach(eye =>{
+        const handleClickIconEye_test = jest.fn(() => billsPage.handleClickIconEye(eye))
         eye.addEventListener('click', handleClickIconEye_test)
+
         userEvent.click(eye)
-    //     expect(handleClickIconEye_test).toHaveBeenCalled()
+        expect(handleClickIconEye_test).toHaveBeenCalled()
+        expect(screen.getByTestId('modaleProof')).toBeTruthy()
       })
 
       
