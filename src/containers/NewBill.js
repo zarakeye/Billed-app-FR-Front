@@ -2,6 +2,15 @@ import { ROUTES_PATH } from '../constants/routes.js'
 import Logout from "./Logout.js"
 
 export default class NewBill {
+  /**
+   * constructor
+   * 
+   * @param {object} options - options to initialize the NewBill instance
+   * @param {Document} options.document - the document object to select the form and input elements
+   * @param {function} options.onNavigate - the function to navigate to a new route
+   * @param {Store} options.store - the store instance to get the user's bills
+   * @param {object} options.localStorage - the localStorage instance to set the user's status to 'connected'
+   */
   constructor({ document, onNavigate, store, localStorage }) {
     this.document = document
     this.onNavigate = onNavigate
@@ -15,29 +24,31 @@ export default class NewBill {
     this.billId = null
     new Logout({ document, localStorage, onNavigate })
   }
+
   handleChangeFile = e => {
+    console.log('handleChangeFile called')
     e.preventDefault()
     const inputImage = this.document.querySelector(`input[data-testid="file"]`)
     const file = inputImage.files[0]
     const filePath = e.target.value.split(/\\/g)
-    const fileName = filePath[filePath.length-1]
+    const fileName = file.name
     
-
-    if (/\.(jpg|jpeg|png)$/g.test(fileName) === false) {
-      // errorMessage.style.display = "block"
-      const errorMessage = this.document.querySelector(`p[data-testid="error-message"]`)
+    if (/\.(jpg|JPG|jpeg|JPEG|png|PNG)$/g.test(fileName) === false) {
+      console.log(`fileName = ${fileName}`)
+      console.log('test failed')
+      const errorMessage = this.document.querySelector(`p[data-testid="file-error-message"]`)
       if (!errorMessage) {
         const errorMessage = this.document.createElement("p")
-        errorMessage.setAttribute("data-testid", "error-message")
-        errorMessage.innerText = "Le fichier doit être une image au format jpg, jpeg ou png"
+        errorMessage.setAttribute("data-testid", "file-error-message")
+        errorMessage.textContent = "Le fichier doit être une image au format jpg, JPG, jpeg, JPEG, png ou PNG"
         inputImage.insertAdjacentElement("afterend", errorMessage)
         errorMessage.style.color = "red"
       }
-      
-      inputImage.value = ""
+    
+      e.target.value = ""
     } else {
-      const errorMessage = this.document.querySelector(`p[data-testid="error-message"]`)
-      if (errorMessage) {
+      const errorMessage = this.document.querySelector(`p[data-testid="file-error-message"]`)
+      if (errorMessage !== null) {
         errorMessage.remove()
       }
       const formData = new FormData()
@@ -54,16 +65,14 @@ export default class NewBill {
           }
         })
         .then(({fileUrl, key}) => {
-          console.log(fileUrl)
           this.billId = key
           this.fileUrl = fileUrl
           this.fileName = fileName
         }).catch(error => console.error(error))
     }
-  }
+  }  
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,

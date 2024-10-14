@@ -12,8 +12,6 @@ import { ROUTES, ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store"
 import router from "../app/Router.js";
-// import 'bootstrap/dist/js/bootstrap.js';
-
 
 jest.mock('../app/Store', () => mockStore)
 
@@ -76,9 +74,6 @@ describe("Given I am connected as an employee", () => {
         expect(handleClickIconEye_test).toHaveBeenCalled()
         expect(screen.getByTestId('modaleProof')).toBeTruthy()
       })
-
-      
-    //   expect(screen.getByTestId('modalProof')).toBeTruthy()
     })
   })
 
@@ -111,7 +106,6 @@ describe("Given I am connected as an employee", () => {
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
-      console.log('root', root)
       router()
       window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByText('Mes notes de frais'))
