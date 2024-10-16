@@ -15,11 +15,6 @@ import router from "../app/Router.js";
 
 // This line is a jest mock of the Store.js file. It replaces the real implementation of the Store.js file with the mockStore object from the __mocks__/store.js file. This allows us to control the behavior of the Store class in our unit tests.
 jest.mock('../app/Store', () => mockStore)
-// jest.mock('../app/Store', () => ({
-//   default: {
-//     bills: jest.fn().mockImplementation(() => mockedBills)
-//   }
-// }));
 
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 

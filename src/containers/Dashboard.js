@@ -95,15 +95,22 @@ export default class {
    * @param {Array} bills - The array of bills.
    */
   handleEditTicket(e, bill, bills) {
-    if (this.editCounter === undefined || this.id !== bill.id) this.editCounter = 0
+    e.preventDefault()
+    e.stopPropagation()
+    let counter;
+    if (this.id === bill.id) {
+      counter = this.editCounter
+    } else if (counter === undefined || this.id !== bill.id) {
+      counter = 0
+    }
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
-    if (this.editCounter % 2 === 0 ) {
+    if (counter % 2 === 0 ) {
       bills.forEach(b =>  $(`#open-bill${b.id}`).css({ background: '#0D5AE5' }))
 
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
       $('.dashboard-right-container').html(DashboardFormUI(bill))
       $('.vertical-navbar').css({ height: '150vh' })
-      this.editCounter ++
+      // this.counter ++
     } else {
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
@@ -112,9 +119,10 @@ export default class {
       `)
       $('.vertical-navbar').css({ height: '120vh' })
 
-      this.editCounter ++
+      // counter ++
     }
-
+    this.editCounter = ++counter
+    // counter++
     $('#icon-eye-d').click(this.handleClickIconEye)
     $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
     $('#btn-refuse-bill').click((e) => this.handleRefuseSubmit(e, bill))
@@ -141,6 +149,8 @@ export default class {
   }
 
   handleShowTickets(e, bills, index) {
+    e.preventDefault()
+    e.stopPropagation()
     if (this.counter === undefined || this.index !== index) this.counter = 0
     if (this.index === undefined || this.index !== index) this.index = index
     if (this.counter % 2 === 0 && this.index === index) {
@@ -151,7 +161,10 @@ export default class {
         .html(cards(filteredBills(bills, getStatus(this.index))))
       
       bills.forEach(bill => {
-        $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+        if(!$(`#open-bill${bill.id}`).data('handlerAttached')) {
+          $(`#open-bill${bill.id}`).on('click', (e) => this.handleEditTicket(e, bill, bills))
+          $(`#open-bill${bill.id}`).data('handlerAttached', true)
+        }
       })
 
       this.counter ++
