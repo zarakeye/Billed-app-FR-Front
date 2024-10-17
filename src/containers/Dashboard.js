@@ -72,9 +72,9 @@ export default class {
     this.document = document
     this.onNavigate = onNavigate
     this.store = store
-    $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1))
-    $('#arrow-icon2').click((e) => this.handleShowTickets(e, bills, 2))
-    $('#arrow-icon3').click((e) => this.handleShowTickets(e, bills, 3))
+    $('#arrow-icon1').on('click', (e) => this.handleShowTickets(e, bills, 1))
+    $('#arrow-icon2').on('click', (e) => this.handleShowTickets(e, bills, 2))
+    $('#arrow-icon3').on('click', (e) => this.handleShowTickets(e, bills, 3))
     new Logout({ localStorage, onNavigate })
   }
 
@@ -95,37 +95,29 @@ export default class {
    * @param {Array} bills - The array of bills.
    */
   handleEditTicket(e, bill, bills) {
-    e.preventDefault()
-    e.stopPropagation()
-    let counter;
-    if (this.id === bill.id) {
-      counter = this.editCounter
-    } else if (counter === undefined || this.id !== bill.id) {
-      counter = 0
-    }
+    if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
-    if (counter % 2 === 0 ) {
-      bills.forEach(b =>  $(`#open-bill${b.id}`).css({ background: '#0D5AE5' }))
-
+    if (this.counter % 2 === 0) {
+      bills.forEach(b => {
+        $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
+      })
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
-      $('.dashboard-right-container').html(DashboardFormUI(bill))
+      $('.dashboard-right-container div').html(DashboardFormUI(bill))
       $('.vertical-navbar').css({ height: '150vh' })
-      // this.counter ++
+      this.counter ++
     } else {
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
-      $('.dashboard-right-container').html(`
+      $('.dashboard-right-container div').html(`
         <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
       `)
       $('.vertical-navbar').css({ height: '120vh' })
-
-      // counter ++
+      this.counter ++
     }
-    this.editCounter = ++counter
-    // counter++
-    $('#icon-eye-d').click(this.handleClickIconEye)
-    $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
-    $('#btn-refuse-bill').click((e) => this.handleRefuseSubmit(e, bill))
+
+    $('#icon-eye-d').on('click', this.handleClickIconEye)
+    $('#btn-accept-bill').on('click', (e) => this.handleAcceptSubmit(e, bill))
+    $('#btn-refuse-bill').on('click', (e) => this.handleRefuseSubmit(e, bill))
   }
 
   handleAcceptSubmit = (e, bill) => {

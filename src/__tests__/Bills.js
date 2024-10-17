@@ -48,9 +48,7 @@ describe("Given I am connected as an employee", () => {
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
       }))
-
       
-    //   // const modal = screen.getByTestId('modalProof')
       document.body.innerHTML = BillsUI({ data: bills })
     //   /**
     //    * Navigates to the desired page by changing the innerHTML of the document's body
