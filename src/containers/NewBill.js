@@ -26,7 +26,6 @@ export default class NewBill {
   }
 
   handleChangeFile = e => {
-    console.log('handleChangeFile called')
     e.preventDefault()
     const inputImage = this.document.querySelector(`input[data-testid="file"]`)
     const file = inputImage.files[0]
@@ -34,8 +33,6 @@ export default class NewBill {
     const fileName = file.name
     
     if (/\.(jpg|JPG|jpeg|JPEG|png|PNG)$/g.test(fileName) === false) {
-      console.log(`fileName = ${fileName}`)
-      console.log('test failed')
       const errorMessage = this.document.querySelector(`p[data-testid="file-error-message"]`)
       if (!errorMessage) {
         const errorMessage = this.document.createElement("p")
@@ -87,8 +84,20 @@ export default class NewBill {
       fileName: this.fileName,
       status: 'pending'
     }
-    this.updateBill(bill)
-    this.onNavigate(ROUTES_PATH['Bills'])
+
+    try {
+      this.updateBill(bill)
+      this.onNavigate(ROUTES_PATH['Bills'])
+    } catch (error) {
+      console.error(error)
+      // this.displayErrorMessage(error.response.message)
+      const errorMessage = this.document.createElement("p")
+      errorMessage.setAttribute("data-testid", "error-message")
+      errorMessage.textContent = error.response.message
+      errorMessage.style.color = "red"
+      const form = this.document.querySelector(`form[data-testid="form-new-bill"]`)
+      form.insertAdjacentElement("beforeend", errorMessage)
+    }
   }
 
   // not need to cover this function by tests
@@ -103,4 +112,14 @@ export default class NewBill {
       .catch(error => console.error(error))
     }
   }
+
+  // displayErrorMessage = (message) => {
+  //   const message = this.document.createElement("p")
+  //   message.setAttribute("data-testid", "error-message")
+  //   message.textContent = message
+  //   message.style.color = "red"
+
+  //   const form = this.document.querySelector(`form[data-testid="form-new-bill"]`)
+  //   form.insertAdjacentElement("beforeend", message)
+  // }
 }

@@ -146,8 +146,6 @@ export default class {
     if (this.counter === undefined || this.index !== index) this.counter = 0
     if (this.index === undefined || this.index !== index) this.index = index
     if (this.counter % 2 === 0 && this.index === index) {
-      console.log('function handleShowTickets : this.counter = ', this.counter, 'this.index = ', this.index, 'this.counter = ', this.counter, `counter % 2 = `, this.counter % 2, 'index ouvert')
-      
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
       $(`#status-bills-container${this.index}`)
         .html(cards(filteredBills(bills, getStatus(this.index))))
@@ -161,8 +159,6 @@ export default class {
 
       this.counter ++
     } else {
-      console.log(`counter === ${this.counter} : Bill close`)
-      console.log('counter = ', this.counter, `counter % 2 = `, this.counter % 2, 'index fermé')
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
       $(`#status-bills-container${this.index}`)
         .html("")

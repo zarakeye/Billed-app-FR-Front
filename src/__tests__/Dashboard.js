@@ -246,7 +246,6 @@ describe("Given I am a user connected as Admin", () => {
   describe("When I navigate to Dashboard", () => {
     test("fetches bills from mock API GET", async () => {
       localStorage.setItem("user", JSON.stringify({ type: "Admin", email: "a@a" }));
-      console.log("localStorage", localStorage)
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
