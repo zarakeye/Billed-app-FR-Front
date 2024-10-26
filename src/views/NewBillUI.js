@@ -1,8 +1,7 @@
 import VerticalLayout from './VerticalLayout.js'
 
 export default () => {
-
-  return (`
+  return `
     <div class='layout'>
       ${VerticalLayout(120)}
       <div class='content'>
@@ -67,8 +66,9 @@ export default () => {
               </div>
             </div>
           </form>
+          <div data-testid="error-message" class="error-message"></div>
         </div>
       </div>
     </div>
-  `)
+  `
 }
