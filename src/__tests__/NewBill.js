@@ -234,6 +234,45 @@ describe('Given I am connected as an employee', () => {
 
       handleSubmitSpy.mockRestore()
     })
+
+    test('creates a new bill', async () => {
+      document.body.innerHTML = NewBillUI()
+      const newBill = new NewBill({
+        document,
+        onNavigate: (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname })
+        },
+        store: mockStore,
+        localStorage: window.localStorage,
+      })
+
+      // Fill form and submit
+      const form = screen.getByTestId('form-new-bill')
+
+      const handleSubmitSpy = jest.spyOn(newBill, 'handleSubmit')
+
+      screen.getByTestId('expense-type').value = 'Transports'
+      screen.getByTestId('expense-name').value = 'Bus'
+      screen.getByTestId('datepicker').value = '2022-01-01'
+      screen.getByTestId('amount').value = '200'
+      screen.getByTestId('vat').value = '80'
+      screen.getByTestId('pct').value = '20'
+      screen.getByTestId('commentary').value = 'test'
+      const inputFile = screen.getByTestId('file')
+      const file = new File([''], 'test.jpg', { type: 'image/jpeg' })
+      userEvent.upload(inputFile, file)
+
+      fireEvent.submit(form)
+
+      await waitFor(() => {
+        const bills = mockStore.bills().list()
+        const billId = '47qAXb6fIm2zOKkLzMro2508'
+        const bill = Array.from(bills).find((b) => b.id === billId)
+        expect(bill).not.toBeNull()
+      })
+
+      handleSubmitSpy.mockRestore()
+    })
   })
 })
 
