@@ -123,14 +123,4 @@ export default class NewBill {
         })
     }
   }
-
-  // displayErrorMessage = (message) => {
-  //   const message = this.document.createElement("p")
-  //   message.setAttribute("data-testid", "error-message")
-  //   message.textContent = message
-  //   message.style.color = "red"
-
-  //   const form = this.document.querySelector(`form[data-testid="form-new-bill"]`)
-  //   form.insertAdjacentElement("beforeend", message)
-  // }
 }

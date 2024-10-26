@@ -164,19 +164,6 @@ describe('Given I am connected as an employee', () => {
         localStorage: window.localStorage,
       })
 
-      // Add error handling to handleSubmit
-      const handleSubmitSpy = jest.spyOn(newBill, 'handleSubmit').mockImplementation(async (e) => {
-        e.preventDefault()
-        try {
-          await newBill.store.bills().update()
-        } catch (error) {
-          const errorDiv = document.createElement('div')
-          errorDiv.setAttribute('data-testid', 'error-message')
-          errorDiv.textContent = error.message
-          document.body.appendChild(errorDiv)
-        }
-      })
-
       // Fill form and submit
       const form = screen.getByTestId('form-new-bill')
       fireEvent.submit(form)
@@ -187,8 +174,6 @@ describe('Given I am connected as an employee', () => {
         expect(errorMessage).toBeTruthy()
         expect(errorMessage.textContent).toBe('Erreur 404')
       })
-
-      handleSubmitSpy.mockRestore()
     })
 
     test('fetches messages from an API and fails with 500 message error', async () => {
@@ -208,20 +193,6 @@ describe('Given I am connected as an employee', () => {
         localStorage: window.localStorage,
       })
 
-      // Add error handling to handleSubmit
-      const handleSubmitSpy = jest.spyOn(newBill, 'handleSubmit').mockImplementation(async (e) => {
-        e.preventDefault()
-        try {
-          await newBill.store.bills().update()
-        } catch (error) {
-          const errorDiv = document.createElement('div')
-          errorDiv.setAttribute('data-testid', 'error-message')
-          errorDiv.textContent = error.message
-          document.body.appendChild(errorDiv)
-        }
-      })
-
-      // Fill form and submit
       const form = screen.getByTestId('form-new-bill')
       fireEvent.submit(form)
 
@@ -231,8 +202,6 @@ describe('Given I am connected as an employee', () => {
         expect(errorMessage).toBeTruthy()
         expect(errorMessage.textContent).toBe('Erreur 500')
       })
-
-      handleSubmitSpy.mockRestore()
     })
 
     test('creates a new bill', async () => {
@@ -248,8 +217,6 @@ describe('Given I am connected as an employee', () => {
 
       // Fill form and submit
       const form = screen.getByTestId('form-new-bill')
-
-      const handleSubmitSpy = jest.spyOn(newBill, 'handleSubmit')
 
       screen.getByTestId('expense-type').value = 'Transports'
       screen.getByTestId('expense-name').value = 'Bus'
@@ -270,8 +237,6 @@ describe('Given I am connected as an employee', () => {
         const bill = Array.from(bills).find((b) => b.id === billId)
         expect(bill).not.toBeNull()
       })
-
-      handleSubmitSpy.mockRestore()
     })
   })
 })
