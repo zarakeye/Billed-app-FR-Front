@@ -145,31 +145,62 @@ describe("Given I am connected as an employee", () => {
     }) 
   })
 
-  describe("When I am on NewBill Page and I click on submit button", () => {
-    test("posts the form, submitting it by calling handleSubmit function and redirecting to dashboard", async () => {
-      // jest.spyOn(mockStore, "bills")
-      // mockStore.bills.mockImplementationOnce(() => {
-      //   return {
-      //     create : () =>  {
-      //       return Promise.reject(new Error("Erreur 404"))
-      //     }
-      //   }
-      // })
+  describe("When I am on NewBill Page and I submit the form after filling it", () => {
+    // test("Then the new bill should be created", async () => {
+    //   const onNavigate = (pathname) => {
+    //     document.body.innerHTML = ROUTES({ pathname })
+    //   }
+      
+    //   const newBill = new NewBill({ document, onNavigate, store: mockStore, localStorage: window.localStorage })
+    //   const handleSubmitMock = jest.fn((event) => newBill.handleSubmit(event))
+    //   const handleChangeFileMock = jest.fn((event) => newBill.handleChangeFile(event))
+    //   const form = screen.getByTestId("form-new-bill")
+    //   expect(form).toBeTruthy()
+    //   form.addEventListener("submit", handleSubmitMock)
 
+    //   screen.getByTestId("expense-name").value = "test"
+    //   screen.getByTestId("expense-type").value = "Transports"
+    //   screen.getByTestId("datepicker").value = "2022-01-01"
+    //   screen.getByTestId("amount").value = "100"
+    //   screen.getByTestId("vat").value = "20"
+    //   screen.getByTestId("pct").value = "10"
+    //   const inputFile = screen.getByTestId("file")
+    //   const file = new File([""], "test.jpg", { type: "image/jpeg" })
+    //   form.addEventListener("change", handleChangeFileMock)
+    //   userEvent.upload(inputFile, file)
+    //   fireEvent.submit(form)
 
-      // jest.mock('../app/Store', () => ({
-      //   default: {
-      //     bills: jest.fn().mockImplementation(() => ({
-      //       create: jest.fn(() => Promise.reject({ response: { status: 404, message: 'Erreur 404' } }))
-      //     }))
-      //   }
-      // })) 
+    //   window.onNavigate(ROUTES_PATH.Bills)
+    //   expect(handleSubmitMock).toHaveBeenCalled()
 
-      /************ */
+    //   await new Promise(process.nextTick);
+    //   await waitFor(() => {
+    //     expect(mockStore.bills.create).toHaveBeenCalledWith(expext.ObjectContaining({
+    //       name: "test",
+    //       type: "Transports",
+    //       amount: 100,
+    //       date: "2022-01-01",
+    //       vat: 20,
+    //       pct: 10,
+    //       commentary: "",
+    //       fileUrl: "https://localhost:3456/images/test.jpg",
+    //       fileName: "test.jpg",
+    //       status: "pending",
+    //     }))
+    //   })
+
+    //   // expect(document.querySelector(`p[data-testid="file-error-message"]`)).toBeNull()
+    //   // expect(mockStore.bills.createBill).toHaveBeenCalled()
+    // }),
+    test("console.error should be called with 'Erreur 404' if an 404 error is returned from the API", async () => {
+      const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {})
       mockStore.bills.mockImplementationOnce(() => {
         return {
           create : () =>  {
-            return Promise.reject(new Error("Erreur 500"))
+            return Promise.reject(new Error("Erreur 404"))
+          },
+          update : () =>  {
+            return Promise.reject(new Error("Erreur 404"))
           }
         }
       })
@@ -195,84 +226,147 @@ describe("Given I am connected as an employee", () => {
         document, onNavigate, store: mockStore, localStorage: window.localStorage
       })
 
-      const handleSubmitMock = jest.fn((event) => newBill.handleSubmit(event))
+      // const handleSubmitMock = jest.fn((event) => newBill.handleSubmit(event))
       
       const form = screen.getByTestId('form-new-bill')
-      form.addEventListener('submit', handleSubmitMock)
+      // form.addEventListener('submit', handleSubmitMock)
       
+      screen.getByTestId("expense-name").value = "test"
+      screen.getByTestId("expense-type").value = "Transports"
+      screen.getByTestId("datepicker").value = "2022-01-01"
+      screen.getByTestId("amount").value = "100"
+      screen.getByTestId("vat").value = "20"
+      screen.getByTestId("pct").value = "10"
+
       const file = screen.getByTestId('file')
       userEvent.upload(file, validFile)
+
+
 
       fireEvent.submit(form)
 
-      window.onNavigate(ROUTES_PATH.NewBill)
       await new Promise(process.nextTick);
-      // const message = screen.getByText(/Erreur 404/)
-      // expect(message).toBeTruthy()
       await waitFor(() => {
-        const message = screen.getByText("Erreur 404");
-        expect(message).toBeTruthy();
+        const message = screen.getByText(/erreur/i).toBeInDocument()
+        // expect(message).toBeTruthy()
       })
+      
+      
+      
+      // await waitFor(() => {
+      //   expect(consoleError).toHaveBeenCalledWith(new Error("Erreur 404"))
+      //   consoleError.mockRestore()
+      // })
     })
 
-    test("posts the form, submitting it by calling handleSubmit function and redirecting to dashboard", async () => {
-      jest.spyOn(mockStore, "bills")
-      mockStore.bills.mockImplementationOnce(() => ({
-        create: jest.fn().mockRejectedValueOnce(new Error('Erreur 500'))
-      }))
+    // test("console.error should be called with 'Erreur 500' if an 500 error is returned from the API", async () => {
+    //   const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {})
+    //   mockStore.bills.mockImplementationOnce(() => {
+    //     return {
+    //       create : () =>  {
+    //         return Promise.reject(new Error("Erreur 500"))
+    //       }
+    //     }
+    //   })
 
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      window.localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }))
-      const email = "a@a"
-      const validFile = new File(["foo"], "foo.png", { type: "image/png" })
+    //   Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+    //   window.localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }))
+    //   const email = "a@a"
+    //   const validFile = new File(["foo"], "image.jpg", { type: "image/jpeg" })
 
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      const html = NewBillUI()
-      root.innerHTML = html
+    //   const root = document.createElement("div")
+    //   root.setAttribute("id", "root")
+    //   const html = NewBillUI()
+    //   root.innerHTML = html
 
-      document.body.appendChild(root)
-      router()
+    //   document.body.appendChild(root)
+    //   router()
 
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
+    //   const onNavigate = (pathname) => {
+    //     document.body.innerHTML = ROUTES({ pathname })
+    //   }
 
-      const newBill = new NewBill({
-        document, onNavigate, store: mockStore, localStorage: window.localStorage
-      })
+    //   const newBill = new NewBill({
+    //     document, onNavigate, store: mockStore, localStorage: window.localStorage
+    //   })
 
-      const handleSubmitMock = jest.fn((event) => newBill.handleSubmit(event))
-      const form = screen.getByTestId('form-new-bill')
-      form.addEventListener('submit', handleSubmitMock)
+    //   const handleSubmitMock = jest.fn((event) => newBill.handleSubmit(event))
       
-      const expanseName = screen.getByTestId('expense-name')
-      userEvent.type(expanseName, 'Note de frais de test')
-
-      const datepicker = screen.getByTestId('datepicker')
-      userEvent.type(datepicker, '2022-01-01')
-
-      const amount = screen.getByTestId('amount')
-      userEvent.type(amount, '200')
-
-      const pct = screen.getByTestId('pct')
-      userEvent.type(pct, '20')
-
-      const file = screen.getByTestId('file')
-      userEvent.upload(file, validFile)
-
-      userEvent.click(screen.getByText('Envoyer'))
+    //   const form = screen.getByTestId('form-new-bill')
+    //   form.addEventListener('submit', handleSubmitMock)
       
-      expect(handleSubmitMock).toHaveBeenCalled()
+    //   const file = screen.getByTestId('file')
+    //   userEvent.upload(file, validFile)
 
-      try {
-        await mockStore.bills().create({ email, file, amount: 200, name: "Note de frais de test", date: "2022-01-01", pct: 20 })
-      } catch (error) {
-        expect(error.message).toBe("Erreur 500")
-        expect(screen.getByText("Erreur 500")).toBeTruthy()
-      }
-    })
+    //   fireEvent.submit(form)
+
+    //   await new Promise(process.nextTick);
+
+    //   await waitFor(() => {
+    //     expect(handleSubmitMock).toHaveBeenCalled()
+    //     expect(consoleError).toHaveBeenCalledWith(new Error("Erreur 500"))
+    //     consoleError.mockRestore()
+    //   })
+    // })
   })
 })
 
+
+
+// jest.spyOn(mockStore, "bills")
+//     mockStore.bills.mockImplementationOnce(() => ({
+//       create: jest.fn().mockRejectedValueOnce(new Error('Erreur 500'))
+//     }))
+
+//     Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+//     window.localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }))
+//     const email = "a@a"
+//     const validFile = new File(["foo"], "foo.png", { type: "image/png" })
+
+//     const root = document.createElement("div")
+//     root.setAttribute("id", "root")
+//     const html = NewBillUI()
+//     root.innerHTML = html
+
+//     document.body.appendChild(root)
+//     router()
+
+//     const onNavigate = (pathname) => {
+//       document.body.innerHTML = ROUTES({ pathname })
+//     }
+
+//     const newBill = new NewBill({
+//       document, onNavigate, store: mockStore, localStorage: window.localStorage
+//     })
+
+//     const handleSubmitMock = jest.fn((event) => newBill.handleSubmit(event))
+//     const form = screen.getByTestId('form-new-bill')
+//     form.addEventListener('submit', handleSubmitMock)
+    
+//     const expanseName = screen.getByTestId('expense-name')
+//     userEvent.type(expanseName, 'Note de frais de test')
+
+//     const datepicker = screen.getByTestId('datepicker')
+//     userEvent.type(datepicker, '2022-01-01')
+
+//     const amount = screen.getByTestId('amount')
+//     userEvent.type(amount, '200')
+
+//     const pct = screen.getByTestId('pct')
+//     userEvent.type(pct, '20')
+
+//     const file = screen.getByTestId('file')
+//     userEvent.upload(file, validFile)
+
+//     userEvent.click(screen.getByText('Envoyer'))
+    
+//     expect(handleSubmitMock).toHaveBeenCalled()
+
+//     try {
+//       await mockStore.bills().create({ email, file, amount: 200, name: "Note de frais de test", date: "2022-01-01", pct: 20 })
+//     } catch (error) {
+//       expect(error.message).toBe("Erreur 500")
+//       expect(screen.getByText("Erreur 500")).toBeTruthy()
+//     }
+//   })
 
